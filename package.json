@@ -4,8 +4,7 @@
   "description": "addictive react component library",
   "main": "build",
   "files": [
-    "build",
-    "src"
+    "build"
   ],
   "author": "guychienll",
   "license": "MIT",
@@ -16,7 +15,7 @@
   },
   "scripts": {
     "start": "tsc -w",
-    "build": "tsc",
+    "build": "rm -rf build && tsc",
     "eslint": "eslint --init",
     "release": "release-it"
   },
