@@ -26,7 +26,7 @@ interface ICarousel {
     { next, previous }: { next: any; previous: any },
   ) => void;
 }
-const Carousel = (props: ICarousel, ref: null | any) => {
+const Carousel = (props: ICarousel) => {
   const {
     data = [],
     renderItem = (item, index) => {
@@ -229,4 +229,4 @@ const StyledCarousel = styled.div<{
   }
 `;
 
-export default React.forwardRef(Carousel);
+export default Carousel;

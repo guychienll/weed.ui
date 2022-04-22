@@ -16,7 +16,7 @@
     "url": "https://github.com/guychienll/weed.ui.git"
   },
   "scripts": {
-    "start": "tsc -w",
+    "start": "npm run clean && mkdir -p build && cp package.build.json ./build/package.json && tsc -w",
     "build": "npm run clean && tsc && cp -r build/* ./",
     "clean": "rm -rf build components util *.d.ts *.js *.js.map",
     "eslint": "eslint --init",
