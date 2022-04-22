@@ -4,7 +4,9 @@
   "description": "addictive react component library",
   "main": "build",
   "files": [
-    "build"
+    "build",
+    "components",
+    "util"
   ],
   "author": "guychienll",
   "license": "MIT",
@@ -15,9 +17,10 @@
   },
   "scripts": {
     "start": "tsc -w",
-    "build": "rm -rf build && tsc",
+    "build": "npm run clean && tsc && cp -r build/* ./",
+    "clean": "rm -rf build components util *.d.ts *.js *.js.map",
     "eslint": "eslint --init",
-    "release": "release-it"
+    "release": "npm run build && release-it"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
