@@ -1,0 +1,8 @@
+{
+  "name": "weed.ui",
+  "version": "1.0.0",
+  "description": "addictive react component library",
+  "main": "index.js",
+  "author": "guychienll",
+  "license": "MIT"
+}
