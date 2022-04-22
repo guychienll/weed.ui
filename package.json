@@ -20,7 +20,7 @@
     "build": "npm run clean && tsc && cp -r build/* ./",
     "clean": "rm -rf build components util *.d.ts *.js *.js.map",
     "eslint": "eslint --init",
-    "release": "npm run build && release-it"
+    "release": "npm run build && dotenv release-it --"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^4.3.0",
@@ -29,6 +29,7 @@
     "@types/styled-components": "^5.1.25",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
+    "dotenv-cli": "^5.1.0",
     "eslint": "^8.13.0",
     "eslint-plugin-react": "^7.29.4",
     "lodash": "^4.17.21",
