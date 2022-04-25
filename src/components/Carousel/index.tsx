@@ -136,6 +136,7 @@ function Carousel<T>(props: ICarousel<T>) {
   function handleTouchStart(touched: any) {
     setEnter(vertical ? touched.clientY : touched.clientX);
   }
+
   function handleTouchEnd(touched: any) {
     const diff = enter - (vertical ? touched.clientY : touched.clientX);
     const positive = diff >= 0;
