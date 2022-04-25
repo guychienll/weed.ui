@@ -13,9 +13,9 @@ type typeTransition = {
   timing: string;
 };
 
-interface ICarousel {
-  data: any[];
-  renderItem: (item: any, index: number) => React.ReactElement | null;
+interface ICarousel<T> {
+  data: T[];
+  renderItem: (item: T, index: number) => React.ReactElement | null;
   vertical?: boolean;
   autoPlay?: boolean;
   autoPlayInterval?: number;
@@ -23,10 +23,12 @@ interface ICarousel {
   transition?: typeTransition;
   onStep?: (
     index: number,
-    { next, previous }: { next: any; previous: any },
+    { next, previous }: { next: unknown; previous: unknown },
   ) => void;
+  swipeable: false;
 }
-const Carousel = (props: ICarousel) => {
+
+function Carousel<T>(props: ICarousel<T>) {
   const {
     data = [],
     renderItem = (item, index) => {
@@ -44,10 +46,10 @@ const Carousel = (props: ICarousel) => {
     onStep = (index, { next, previous }) => {
       console.log(index, next, previous);
     },
+    swipeable = false,
   } = props;
   const dataRefs = useRef<any>([]);
   const [fakeSetActive, setFakeSetActive] = useState(1);
-
   const fakeSet = useMemo(() => {
     try {
       return [data[data.length - 1], ...data, data[0]];
@@ -83,6 +85,7 @@ const Carousel = (props: ICarousel) => {
 
   async function seamlessGoToFirst() {
     removeTransition();
+    await delay(10);
     setFakeSetActive(1);
     await delay(10);
     restoreTransition();
@@ -90,19 +93,20 @@ const Carousel = (props: ICarousel) => {
 
   async function seamlessGoToLast() {
     removeTransition();
+    await delay(10);
     setFakeSetActive(fakeSet.length - 2);
     await delay(10);
     restoreTransition();
   }
 
   function removeTransition() {
-    dataRefs.current.forEach((n: HTMLElement) => {
+    dataRefs.current.forEach((n: any) => {
       n.classList.add("no-transition");
     });
   }
 
   function restoreTransition() {
-    dataRefs.current.forEach((n: HTMLElement) => {
+    dataRefs.current.forEach((n: any) => {
       n.classList.remove("no-transition");
     });
   }
@@ -139,7 +143,6 @@ const Carousel = (props: ICarousel) => {
       Math.abs(diff) >
       (vertical ? touched.target.clientHeight : touched.target.clientWidth) / 4;
     if (overHalf) {
-      console.log(123);
       if (positive) {
         next();
       } else {
@@ -149,8 +152,35 @@ const Carousel = (props: ICarousel) => {
     setEnter(0);
   }
 
+  const _props = swipeable
+    ? {
+        onMouseDown: handleTouchStart,
+        onMouseUp: handleTouchEnd,
+        onTouchStart: (e: any) => {
+          const touched = e.changedTouches[0];
+          handleTouchStart(touched);
+        },
+        onTouchEnd: (e: any) => {
+          const touched = e.changedTouches[0];
+          handleTouchEnd(touched);
+        },
+      }
+    : {};
+
   return (
     <StyledCarousel
+      draggable={false}
+      {..._props}
+      // onMouseDown={handleTouchStart}
+      // onMouseUp={handleTouchEnd}
+      // onTouchStart={(e: any) => {
+      //   const touched = e.changedTouches[0];
+      //   handleTouchStart(touched);
+      // }}
+      // onTouchEnd={(e: any) => {
+      //   const touched = e.changedTouches[0];
+      //   handleTouchEnd(touched);
+      // }}
       vertical={vertical}
       className="carousel"
       size={size}
@@ -161,17 +191,6 @@ const Carousel = (props: ICarousel) => {
           const transformY = `translateY(${-fakeSetActive * 100}%)`;
           return (
             <div
-              draggable={false}
-              onMouseDown={handleTouchStart}
-              onMouseUp={handleTouchEnd}
-              onTouchStart={(e) => {
-                const touched = e.changedTouches[0];
-                handleTouchStart(touched);
-              }}
-              onTouchEnd={(e) => {
-                const touched = e.changedTouches[0];
-                handleTouchEnd(touched);
-              }}
               key={i}
               ref={(node) => {
                 dataRefs.current[i] = node;
@@ -188,7 +207,7 @@ const Carousel = (props: ICarousel) => {
       </div>
     </StyledCarousel>
   );
-};
+}
 
 const StyledCarousel = styled.div<{
   vertical: boolean;
