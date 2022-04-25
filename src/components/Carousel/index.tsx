@@ -25,7 +25,7 @@ interface ICarousel<T> {
     index: number,
     { next, previous }: { next: unknown; previous: unknown },
   ) => void;
-  swipeable: false;
+  swipeable?: boolean;
 }
 
 function Carousel<T>(props: ICarousel<T>) {
