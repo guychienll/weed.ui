@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import Carousel from "weed.ui/components/Carousel";
 
 interface ITooltip {
   children?: React.ReactElement;
@@ -93,40 +92,7 @@ const StyledTooltip = styled.div<{ configs: any }>`
 `;
 
 const App = () => {
-  const [step, setStep] = useState<any>(null);
-  return (
-    <div className="App">
-      <div style={{ width: 300, height: 300 }}>
-        <Carousel
-          size={{ width: "100%", height: "100%" }}
-          data={[
-            "https://fakeimg.pl/400x400/?text=1&font=lobster",
-            "https://fakeimg.pl/400x400/?text=2&font=lobster",
-          ]}
-          renderItem={(item) => {
-            return (
-              <img
-                draggable={false}
-                src={item}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-                alt="rendered"
-              />
-            );
-          }}
-          onStep={(index, { next, previous }) => {
-            setStep({ index, next, previous });
-          }}
-          swipeable={true}
-        />
-      </div>
-      {/*<button onClick={step?.previous}>previous</button>*/}
-      {/*<button onClick={step?.next}>next</button>*/}
-    </div>
-  );
+  return <div className="App"></div>;
 };
 
 export default App;

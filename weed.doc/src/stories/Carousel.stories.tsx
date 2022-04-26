@@ -4,7 +4,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import Carousel from "./Carousel";
 
 export default {
-  title: "Carousel",
+  title: "資料呈現/輪播牆 ( Carousel )",
   component: Carousel,
   argTypes: {
     data: {
