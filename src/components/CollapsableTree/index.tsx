@@ -1,72 +1,73 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 
-type ICollapsableTree = {
+interface RecursiveTree {
+  name: string;
+  display: string;
+  children?: RecursiveTree[];
+}
+
+interface ICollapsableTree {
+  tree: RecursiveTree;
   onToggleOn?: (node: string, hasChildren: boolean) => void;
   onToggleOff?: (node: string, hasChildren: boolean) => void;
-  tree: any;
   nodeStyle?: any;
-};
-
-const defaultTree = {
-  name: "root",
-  display: "Root",
-  children: [
-    {
-      name: "1",
-      display: "Node_1",
-      children: [
-        {
-          name: "1-1",
-          display: "Node_1_1",
-        },
-      ],
-    },
-    {
-      name: "2",
-      display: "Node_2",
-      children: [
-        { name: "2-1", display: "Node_2_1" },
-        { name: "2-2", display: "Node_2_2" },
-        { name: "2-3", display: "Node_2_3" },
-        { name: "2-4", display: "Node_2_4" },
-        { name: "2-5", display: "Node_2_5" },
-        { name: "2-6", display: "Node_2_6" },
-      ],
-    },
-    {
-      name: "3",
-      display: "Node_3",
-      children: [
-        { name: "3-1", display: "Node_3_1" },
-        {
-          name: "3-2",
-          display: "Node_3_2",
-          children: [
-            { name: "3-2-1", display: "Node_3-2-1" },
-            { name: "3-2-2", display: "Node_3-2-2" },
-            { name: "3-2-3", display: "Node_3-2-3" },
-            { name: "3-2-4", display: "Node_3-2-4" },
-            { name: "3-2-5", display: "Node_3-2-5" },
-            { name: "3-2-6", display: "Node_3-2-6" },
-          ],
-        },
-      ],
-    },
-  ],
-};
+  treeStyle?: any;
+  nodeActiveStyle?: string;
+  initialActiveNode?: string;
+  icons?: {
+    on?: React.ReactElement | null;
+    off?: React.ReactElement | null;
+  };
+}
 
 function CollapsableTree({
+  tree = {
+    name: "root",
+    display: "Root",
+    children: [
+      {
+        name: "1",
+        display: "Node_1",
+        children: [],
+      },
+      {
+        name: "2",
+        display: "Node_2",
+        children: [{ name: "2-1", display: "Node_2_1" }],
+      },
+    ],
+  },
   onToggleOn = () => 0,
   onToggleOff = () => 0,
-  tree = defaultTree,
-  nodeStyle = {},
+  treeStyle = {
+    border: "2px solid #444",
+    padding: "10px",
+    overflowX: "auto",
+    backgroundColor: "#ccc",
+  },
+  nodeStyle = {
+    margin: "10px 0",
+    padding: "20px 10px",
+    height: "10px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    minWidth: 100,
+    backgroundColor: "#7a8f47",
+    color: "orange",
+  },
+  nodeActiveStyle = `
+            font-weight:bold;
+            font-size:18px;
+           `,
+  initialActiveNode = "",
+  icons = {
+    on: <div>+</div>,
+    off: <div>-</div>,
+  },
 }: ICollapsableTree) {
-  const [activeNode, setActiveNode] = useState("");
-
-  useEffect(() => {
-    setActiveNode("");
-  }, []);
+  const [activeNode, setActiveNode] = useState(initialActiveNode || "");
 
   const getCategoriesElem = useCallback(
     (tree: any, isShow: boolean) => {
@@ -100,14 +101,15 @@ function CollapsableTree({
             level={level}
             isShow={isShow}
             isActive={getIsActive()}
+            activeStyle={nodeActiveStyle}
             key={index}>
             <div
               className="content"
               onClick={handleNodeClick}
               style={nodeStyle}>
               {node.display}
-              {off && <div>+</div>}
-              {on && <div>-</div>}
+              {off && icons.on}
+              {on && icons.off}
             </div>
             {hasChildren && getCategoriesElem(node, on)}
           </StyledTreeNode>
@@ -118,52 +120,56 @@ function CollapsableTree({
   );
 
   return (
-    <StyledCollapsableTree>
-      <div className="tree">{getCategoriesElem(tree, true)}</div>
+    <StyledCollapsableTree style={treeStyle}>
+      {getCategoriesElem(tree, true)}
     </StyledCollapsableTree>
   );
 }
 
-const StyledCollapsableTree = styled.div`
+type typeStyledTree = { style: any };
+
+const StyledCollapsableTree = styled.div<typeStyledTree>`
   width: 100%;
-  //not-need
-  box-sizing: border-box;
-  background-color: #ccc;
-  padding: 20px;
-  border-radius: 15px;
 `;
 
 type typeStyledTreeNode = {
   level: number;
   isShow: boolean;
   isActive: boolean;
+  activeStyle: string;
 };
 
 const StyledTreeNode = styled.div<typeStyledTreeNode>`
   padding-left: ${({ level }) => `${level * 25}px`};
   & > .content {
-    background-color: #7a8f47;
-    margin: ${({ isShow }) => (isShow ? `10px 0` : 0)};
-    padding: ${({ isShow }) => (isShow ? `20px` : 0)};
-    height: ${({ isShow }) => (isShow ? `20px` : 0)};
-    border-radius: 15px;
-    // no need
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     cursor: pointer;
-    transform: ${({ isShow }) => (isShow ? `scale(1)` : `scale(0)`)};
-    visibility: ${({ isShow }) => (isShow ? "visible" : "hidden")};
-    opacity: ${({ isShow }) => (isShow ? 1 : 0)};
-    transform-origin: 50% 50%;
-    //transition: all 400ms cubic-bezier(0.47, 1.64, 0.41, 0.8);
-    transition: all 600ms cubic-bezier(0.47, 1.64, 0.41, 0.8);
-    font-weight: ${({ isActive }) => (isActive ? "bold" : "normal")};
-    font-size: ${({ isActive }) => (isActive ? "18px" : "unset")};
-    font-style: ${({ isActive }) => (isActive ? "italic" : "unset")};
-    letter-spacing: ${({ isActive }) => (isActive ? "1.5px" : "unset")};
-    color: orange;
+    transform-origin: 0 0;
+    transition: all 300ms ease;
     user-select: none;
+
+    ${({ isShow }) =>
+      isShow
+        ? `
+    transform: scale(1);
+    visibility: visible;
+    opacity: 1;
+    `
+        : `
+    transform: scale(0);
+    visibility: hidden;
+    opacity: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
+    `}
+
+    ${({ isActive, activeStyle }) =>
+      isActive
+        ? activeStyle
+        : `font-style:unset;
+            font-weight:unset;
+            font-size:unset;
+            letter-spacing:unset;`}
   }
 `;
 
