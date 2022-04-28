@@ -5,6 +5,17 @@ import { userEvent, within } from "@storybook/testing-library";
 
 import CollapsableTree from "./CollapsableTree";
 import { delay } from "weed.ui/util/timing";
+import styled from "styled-components";
+import {
+  ArgsTable,
+  Description,
+  Preview,
+  PRIMARY_STORY,
+  Stories,
+  Story,
+  Subtitle,
+  Title,
+} from "@storybook/addon-docs";
 
 const defaultTree = {
   name: "root",
@@ -55,7 +66,27 @@ export default {
       },
     },
   },
-  parameters: {},
+  parameters: {
+    docs: {
+      page: () => {
+        return (
+          <DocWrapper>
+            <Title />
+            <Subtitle />
+            {/*@ts-ignore*/}
+            <Preview isExpanded withToolbar={true}>
+              <div className="story">
+                <Story id="資料呈現-折疊樹-collapsabletree--primary" />
+              </div>
+            </Preview>
+            <Description />
+            <ArgsTable story={PRIMARY_STORY} />
+            <Stories />
+          </DocWrapper>
+        );
+      },
+    },
+  },
   decorators: [(Story) => <Story />],
 } as ComponentMeta<typeof CollapsableTree>;
 
@@ -110,3 +141,28 @@ Primary.play = async ({ canvasElement }) => {
   await delay(500);
   await userEvent.click(canvas.getByText("Node_2"));
 };
+
+const DocWrapper = styled.div`
+  max-width: 1000px;
+  overflow-x: auto;
+  & thead > tr > th:nth-child(3) {
+    display: none;
+  }
+  & tbody > tr > td:nth-child(3) {
+    display: none;
+  }
+  & .sbdocs-expandable {
+    & > span {
+      line-height: 1.5rem;
+      white-space: pre-line;
+      max-width: 200px;
+      width: 200px;
+      word-break: break-all;
+    }
+  }
+  & .story {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;

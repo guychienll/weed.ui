@@ -13,7 +13,7 @@ type typeTransition = {
   timing: string;
 };
 
-interface ICarousel<T> {
+export interface ICarousel<T> {
   data: T[];
   renderItem: (item: T, index: number) => React.ReactElement | null;
   vertical?: boolean;
