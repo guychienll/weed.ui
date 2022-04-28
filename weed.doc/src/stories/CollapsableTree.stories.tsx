@@ -117,10 +117,10 @@ Primary.args = {
     backgroundColor: "#444",
     color: "white",
   },
-  nodeActiveStyle: `
-            font-weight:bold;
-            font-size:18px;
-           `,
+  nodeActiveStyle: {
+    fontWeight: "bold",
+    fontSize: "18px",
+  },
   initialActiveNode: "",
   icons: {
     on: <div>+</div>,

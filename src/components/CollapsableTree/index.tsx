@@ -13,7 +13,7 @@ interface ICollapsableTree {
   onToggleOff?: (node: string, hasChildren: boolean) => void;
   nodeStyle?: any;
   treeStyle?: any;
-  nodeActiveStyle?: string;
+  nodeActiveStyle?: any;
   initialActiveNode?: string;
   icons?: {
     on?: React.ReactElement | null;
@@ -57,10 +57,10 @@ function CollapsableTree({
     backgroundColor: "#7a8f47",
     color: "orange",
   },
-  nodeActiveStyle = `
-            font-weight:bold;
-            font-size:18px;
-           `,
+  nodeActiveStyle = {
+    fontWeight: "bold",
+    fontSize: "18px",
+  },
   initialActiveNode = "",
   icons = {
     on: <div>+</div>,
@@ -101,7 +101,7 @@ function CollapsableTree({
             level={level}
             isShow={isShow}
             isActive={getIsActive()}
-            activeStyle={nodeActiveStyle}
+            activeStyle={styleString(nodeActiveStyle)}
             key={index}>
             <div
               className="content"
@@ -138,6 +138,13 @@ type typeStyledTreeNode = {
   isActive: boolean;
   activeStyle: string;
 };
+const styleString = (styleObject: any) =>
+  Object.entries(styleObject)
+    .map(
+      ([k, v]) =>
+        `${k.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`)}:${v}`,
+    )
+    .join(";");
 
 const StyledTreeNode = styled.div<typeStyledTreeNode>`
   padding-left: ${({ level }) => `${level * 25}px`};
