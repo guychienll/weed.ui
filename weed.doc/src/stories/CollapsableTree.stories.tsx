@@ -1,7 +1,10 @@
 import React from "react";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
+import { userEvent, within } from "@storybook/testing-library";
+
 import CollapsableTree from "./CollapsableTree";
+import { delay } from "weed.ui/util/timing";
 
 const defaultTree = {
   name: "root",
@@ -53,13 +56,7 @@ export default {
     },
   },
   parameters: {},
-  decorators: [
-    (Story) => (
-      <div style={{ margin: "3em" }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <Story />],
 } as ComponentMeta<typeof CollapsableTree>;
 
 const Template: ComponentStory<typeof CollapsableTree> = (args) => (
@@ -86,17 +83,30 @@ Primary.args = {
     alignItems: "center",
     justifyContent: "space-between",
     minWidth: 100,
-    backgroundColor: "#7a8f47",
-    color: "orange",
+    backgroundColor: "#444",
+    color: "white",
   },
   nodeActiveStyle: `
             font-weight:bold;
             font-size:18px;
-            border: 4px solid #444;
            `,
   initialActiveNode: "",
   icons: {
     on: <div>+</div>,
     off: <div>-</div>,
   },
+};
+
+Primary.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await userEvent.click(canvas.getByText("Node_1"));
+  await delay(500);
+  await userEvent.click(canvas.getByText("Node_3"));
+  await delay(500);
+  await userEvent.click(canvas.getByText("Node_3_2"));
+  await delay(500);
+  await userEvent.click(canvas.getByText("Node_2"));
+  await delay(500);
+  await userEvent.click(canvas.getByText("Node_2"));
 };

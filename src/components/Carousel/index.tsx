@@ -23,7 +23,13 @@ interface ICarousel<T> {
   transition?: typeTransition;
   onStep?: (
     index: number,
-    { next, previous }: { next: unknown; previous: unknown },
+    {
+      next,
+      previous,
+    }: {
+      next: _.DebouncedFunc<() => void>;
+      previous: _.DebouncedFunc<() => void>;
+    },
   ) => void;
   swipeable?: boolean;
 }
@@ -170,18 +176,9 @@ function Carousel<T>(props: ICarousel<T>) {
 
   return (
     <StyledCarousel
+      data-testid="carousel"
       draggable={false}
       {..._props}
-      // onMouseDown={handleTouchStart}
-      // onMouseUp={handleTouchEnd}
-      // onTouchStart={(e: any) => {
-      //   const touched = e.changedTouches[0];
-      //   handleTouchStart(touched);
-      // }}
-      // onTouchEnd={(e: any) => {
-      //   const touched = e.changedTouches[0];
-      //   handleTouchEnd(touched);
-      // }}
       vertical={vertical}
       className="carousel"
       size={size}
